@@ -199,6 +199,81 @@ static int xmp_unlink(const char *path)
     Encrypt(fname);
     sprintf(fpath, "%s%s", dirpath, fname);
 
+    pid_t child_id;
+    child_id = fork();
+
+    if(child_id == 0){
+        char waktu[1000], namafix[1000], fpathl[1000], dirpathl[1000], fnamel[1000], file[1000], namafile[1000], Backup[1000], dirpathfolder[1000], dirpathnama[1000], dirpathzip[1000];
+
+        char cut[1000] = {0};
+        char *fuses;
+        time_t rawtime;
+        struct tm *info;
+        
+        time(&rawtime);
+        info = localtime(&rawtime);
+        memset(waktu, '\0', sizeof(waktu));
+        sprintf(waktu, "%d:%02d:%02d_%02d:%02d:%02d", info->tm_year+1900, info->tm_mon+1, info->tm_mday, info->tm_hour, info->tm_min, info->tm_sec);
+
+        memset(namafix, '\0', sizeof(namafix));
+        memset(fpathl, '\0', sizeof(fpathl));
+        memset(fname, '\0', sizeof(fname));
+        memset(file, '\0', sizeof(file));
+        memset(namafile, '\0', sizeof(namafile));
+        memset(dirpathl, '\0', sizeof(dirpathl));
+        memset(Backup, '\0', sizeof(Backup));
+        memset(dirpathfolder, '\0', sizeof(dirpathfolder));
+        memset(dirpathnama, '\0', sizeof(dirpathnama));
+        memset(dirpathzip, '\0', sizeof(dirpathzip));
+
+        strcpy(fname, path);
+        strcpy(dirpathl, dirpath);
+        strcpy(dirpathfolder, dirpath); 
+        strcpy(dirpathnama, dirpath);
+        strcpy(dirpathzip, dirpath);
+
+        fuses = strrchr(fname, '/');
+        strcpy(file, fuses);
+
+        for(int i=strlen(fname); i>0; i--){
+            if(fname[i]=='/'){
+                int j=i;
+                for(int z=0; z<j; z++){
+                    cut[z] = fname[z];
+                }
+                break;
+            }
+        }
+        if(cut == NULL)
+            strcpy(cut, "/");
+    
+        strcpy(namafile, path);
+        Encrypt(namafile);
+        strcat(dirpathnama, namafile);
+        printf("nama file asli %s\n", dirpathnama);
+        
+        sprintf(Backup, "%s/Backup", cut);
+        Encrypt(Backup);
+        strcat(dirpathfolder, Backup);
+        printf("folder yang mau dibackup asli %s\n", dirpathfolder);
+        
+        sprintf(fname, "%s/RecycleBin", cut);
+        strcpy(fnamel, fname);
+        Encrypt(fnamel);
+        strcat(dirpathl, fnamel);
+        mkdir(dirpathl, 0775);
+
+        sprintf(namafix, "%s_deleted_%s", file, waktu);
+        Encrypt(namafix);
+
+        sprintf(fpathl, "%s%s", fnamel, namafix);
+        strcat(dirpathzip, fpathl);
+        printf("file hasil zip asli : %s\n", dirpathzip);
+
+        char *argv[5] ={"zip", "-jrm", dirpathzip, dirpathnama, dirpathfolder, NULL};
+        execv("/usr/bin/zip", argv);
+    }
+
 	res = unlink(fpath);
 	if (res == -1)
 		return -errno;
