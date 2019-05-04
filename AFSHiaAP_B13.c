@@ -250,12 +250,12 @@ static int xmp_unlink(const char *path)
         strcpy(namafile, path);
         Encrypt(namafile);
         strcat(dirpathnama, namafile);
-        printf("nama file asli %s\n", dirpathnama);
+        // printf("nama file asli %s\n", dirpathnama);
         
         sprintf(Backup, "%s/Backup", cut);
         Encrypt(Backup);
         strcat(dirpathfolder, Backup);
-        printf("folder yang mau dibackup asli %s\n", dirpathfolder);
+        // printf("folder yang mau dibackup asli %s\n", dirpathfolder);
         
         sprintf(fname, "%s/RecycleBin", cut);
         strcpy(fnamel, fname);
@@ -268,7 +268,7 @@ static int xmp_unlink(const char *path)
 
         sprintf(fpathl, "%s%s", fnamel, namafix);
         strcat(dirpathzip, fpathl);
-        printf("file hasil zip asli : %s\n", dirpathzip);
+        // printf("file hasil zip asli : %s\n", dirpathzip);
 
         char *argv[5] ={"zip", "-jrm", dirpathzip, dirpathnama, dirpathfolder, NULL};
         execv("/usr/bin/zip", argv);
